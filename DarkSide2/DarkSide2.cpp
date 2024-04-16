@@ -1,4 +1,3 @@
-
 #include <Windows.h>
 #include <winternl.h>
 
@@ -66,8 +65,8 @@ PVOID FindAPI(PPEB peb, PCWSTR dllName, PCSTR funcName, HMODULE& baseAddress) {
 		while (((*--last) & ~0x20) == (dllName[--i] & ~0x20))
 			;
 		if (*last == L'\\') {
-			baseAddress = (HMODULE)entry->DllBase;
 			// found it
+			baseAddress = (HMODULE)entry->DllBase;
 			return GetFunctionAddress(entry->DllBase, funcName);
 		}
 
