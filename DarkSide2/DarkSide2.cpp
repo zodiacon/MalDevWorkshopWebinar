@@ -56,7 +56,7 @@ size_t wcslen2(PCWSTR s) {
 	return len;
 }
 
-PVOID FindAPI(PPEB peb, PCWSTR dllName, PCSTR funcName, HMODULE& baseAddress) {
+PVOID FindExport(PPEB peb, PCWSTR dllName, PCSTR funcName, HMODULE& baseAddress) {
 	auto head = &peb->Ldr->InMemoryOrderModuleList;
 	for (auto next = head->Flink; next != head; next = next->Flink) {
 		auto entry = CONTAINING_RECORD(next, LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);
@@ -140,7 +140,7 @@ int mainCRTStartup(PPEB peb) {
 	}
 
 	HMODULE hKernel32;
-	auto pGetProcAddress = (decltype(GetProcAddress)*)FindAPI(peb, L"Kernel32.Dll", "GetProcAddress", hKernel32);
+	auto pGetProcAddress = (decltype(GetProcAddress)*)FindExport(peb, L"Kernel32.Dll", "GetProcAddress", hKernel32);
 	auto pLoadLibraryA = (decltype(LoadLibraryA)*)pGetProcAddress(hKernel32, "LoadLibraryA");
 	pGetModuleHandle = (decltype(GetModuleHandleA)*)pGetProcAddress(hKernel32, "GetModuleHandleA");
 	pCreateFile = (decltype(CreateFileW)*)pGetProcAddress(hKernel32, "CreateFileW");
